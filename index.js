@@ -3,6 +3,10 @@ const debug = require('debug')('ecolier')
 const cors = require('cors')
 const { MongoClient } = require('mongodb')
 
+const environment = process.env.NODE_ENV ?? 'development'
+if (environment === 'development') { require('dotenv').config({ path: '.env.dev' }) }
+if (environment === 'production') {  require('dotenv').config({ path: '.env.prod' }) }
+
 var database = {}
 
 const app = express()
@@ -23,9 +27,20 @@ app.get('/:locale/article/:name', async (req, res, next) => {
     res.send(featured)
 })
 
-new MongoClient('mongodb://localhost:27017', { useUnifiedTopology: true }).connect().then((databaseClient) => {
+app.get('/:locale/products', async (req, res, next) => {
+    const products = await database.collection('products').find({ locale: res.locals.locale }).toArray()
+    res.send(products)
+})
+
+app.get('/:locale/product/:product', async (req, res, next) => {
+    const name = req.params.product.charAt(0).toUpperCase() + req.params.product.slice(1)
+    const product = await database.collection('products').findOne({ locale: res.locals.locale, name: name })
+    res.send(product)
+})
+
+new MongoClient(process.env.DATABASE, { useUnifiedTopology: true, useNewUrlParser: true }).connect().then((databaseClient) => {
     database = databaseClient.db('ecolier')
-    app.listen(5001, () => {
-        debug('Listening on port 5001')
+    app.listen(process.env.PORT, () => {
+        debug(`Listening on port ${process.env.PORT}`)
     })
 })

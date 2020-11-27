@@ -6,12 +6,17 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "start": "DEBUG=ecolier node index.js"
+    "start": "node index.js",
+    "debug": "DEBUG=ecolier nodemon index.js"
   },
   "dependencies": {
-    "express": "4.17.1",
     "cors": "2.8.5",
     "debug": "4.2.0",
+    "dotenv": "^8.2.0",
+    "express": "4.17.1",
     "mongodb": "3.6.2"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.6"
   }
 }
