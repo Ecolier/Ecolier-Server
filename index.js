@@ -23,7 +23,7 @@ app.get('/:locale/featured', async (req, res, next) => {
 })
 
 app.get('/:locale/article/:name', async (req, res, next) => {
-    const featured = await database.collection('articles').find({ locale: res.locals.locale, name: req.params.name }).toArray()
+    const featured = await database.collection('articles').findOne({ locale: res.locals.locale, name: req.params.name })
     res.send(featured)
 })
 
