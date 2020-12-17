@@ -40,7 +40,10 @@ app.get('/:locale/product/:product', async (req, res, next) => {
 
 app.get('/:locale/developer', async (req, res, next) => {
     const developer = await database.collection('developer').find({
-        $or: [{ id: 0}, { locale: req.params.locale }]
+        $or: [
+            { id: 0, locale: { $exists: false }}, 
+            { id: 0, locale: req.params.locale }
+        ]
     }, { fields: { _id: 0, id: 0, locale: 0 }}).toArray()
     res.send(developer.reduce((i, t) => {
         return { ...i, ...t }
